@@ -1,0 +1,12 @@
+-- id
+-- name
+-- address
+-- province
+-- city
+-- address
+-- contact
+-- contact_phone
+-- password
+-- is_recorded 基础资料是否已填
+-- is_wechat_pay_recorded 微信资料是否已填
+-- is_ali_pay_recorded 支付宝资料是否已填
