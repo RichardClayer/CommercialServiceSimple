@@ -31,6 +31,22 @@ func RunServer() error {
     flag.StringVar(&cfg.DataBaseSchema, "db-schema", "", "数据库名")
     flag.Parse()
 
+    if len(cfg.HTTPPort) == 0 {
+        return fmt.Errorf("请指定HTTP端口号\n")
+    }
+    if len(cfg.DataBaseHost) == 0 {
+        return fmt.Errorf("请指定数据库服务器主机地址\n")
+    }
+    if len(cfg.DataBaseUser) == 0 {
+        return fmt.Errorf("请指定数据库服务器登录用户名\n")
+    }
+    if len(cfg.DataBasePassword) == 0 {
+        return fmt.Errorf("请指定数据库服务器登录密码\n")
+    }
+    if len(cfg.DataBaseSchema) == 0 {
+        return fmt.Errorf("请指定数据库名\n")
+    }
+
     param := "parseTime=true"
     dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?%s",
         cfg.DataBaseUser,

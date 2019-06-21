@@ -5,8 +5,8 @@ import "github.com/BiLuoHui/CommercialServiceSimple/pkg/services"
 var PayRoutes = Routes{
     Route{
         "jsapi",
-        "post",
-        "jsapi",
+        "POST",
+        "/jsapi",
         services.JSAPIPay,
     },
 }
