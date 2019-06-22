@@ -61,5 +61,6 @@ func RunServer() error {
     defer db.Close()
 
     // 创建HTTP服务器
-    return rest.RunServer(ctx, cfg.HTTPPort)
+    server := rest.NewServer(db)
+    return rest.RunServer(ctx, server, cfg.HTTPPort)
 }

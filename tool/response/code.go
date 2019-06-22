@@ -1,6 +1,6 @@
 package response
 
-const Success    = 0000
+const Success = 0000
 
 // 请求类错误
 const (
