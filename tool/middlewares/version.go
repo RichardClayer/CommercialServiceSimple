@@ -7,6 +7,7 @@ import (
 	"regexp"
 )
 
+// RequestVersionCheck 请求头版本检查
 func RequestVersionCheck(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		a := r.Header.Get("Accept")

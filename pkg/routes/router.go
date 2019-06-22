@@ -18,10 +18,16 @@ type Routes = []Route
 
 func NewRouter() *mux.Router {
 	router := mux.NewRouter().StrictSlash(true)
-	router.Use(middlewares.RequestVersionCheck)
+	useMiddlewares(router)
 	for _, route := range PayRoutes {
 		router.Methods(route.Method).Name(route.Name).Path(route.Pattern).HandlerFunc(route.HandlerFun)
 	}
 
 	return router
+}
+
+// 中间件
+func useMiddlewares(r *mux.Router) {
+	r.Use(middlewares.RequestVersionCheck)
+	r.Use(middlewares.RequestAuth)
 }
