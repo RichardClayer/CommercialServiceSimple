@@ -5,9 +5,9 @@ import (
     "net/http"
 )
 
-func JSAPIPay(w http.ResponseWriter, _ *http.Request) {
+func JSAPIPay(w http.ResponseWriter, r *http.Request) {
     var m = make(map[string]string)
-    m["key"] = "value"
+    m["accept"] = r.Header.Get("Accept")
 
     respData, err := json.Marshal(m)
     if err !=nil {

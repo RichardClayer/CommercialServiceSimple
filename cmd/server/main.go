@@ -2,6 +2,7 @@ package main
 
 import (
     "fmt"
+    "log"
     "os"
 
     "github.com/BiLuoHui/CommercialServiceSimple/pkg/cmd"
@@ -13,4 +14,6 @@ func main() {
         _, _ = fmt.Fprintf(os.Stderr, "%v\n", err)
         os.Exit(1)
     }
+
+    log.Println("HTTP服务器启动成功")
 }
