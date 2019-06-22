@@ -25,7 +25,7 @@ func RequestVersionCheck(next http.Handler) http.Handler {
 		if rs := regex.FindIndex([]byte(a)); rs == nil {
 			rd := response.RespData{
 				Code:    response.VersionNone,
-				Message: "缺少版本号",
+				Message: "缺少版本号或版本号配置不正确",
 			}
 
 			response.Send(w, rd)
