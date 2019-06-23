@@ -8,6 +8,7 @@ import (
     "net/http"
 )
 
+// IsRegistered 是否已注册商户
 func IsRegistered(w http.ResponseWriter, _ *http.Request) {
     c, err := database.Connect()
     if err != nil {
