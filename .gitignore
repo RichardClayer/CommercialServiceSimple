@@ -13,3 +13,5 @@ cmd/server/server
 *.out
 
 .idea
+
+config/*.ini
