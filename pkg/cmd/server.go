@@ -8,6 +8,7 @@ import (
     "database/sql"
 
     "github.com/BiLuoHui/CommercialServiceSimple/pkg/protocol/rest"
+    "github.com/BiLuoHui/CommercialServiceSimple/pkg/services"
 
     _ "github.com/go-sql-driver/mysql"
 )
@@ -34,6 +35,24 @@ func RunServer() error {
     if len(cfg.HTTPPort) == 0 {
         return fmt.Errorf("请指定HTTP端口号\n")
     }
+
+    if err := initProject(cfg); err != nil {
+        return err
+    }
+
+    // 创建HTTP服务器
+    return rest.RunServer(ctx, cfg.HTTPPort)
+}
+
+func initProject(cfg Config) error {
+    if err := initDb(cfg); err != nil {
+        return err
+    }
+
+    return nil
+}
+
+func initDb(cfg Config) error {
     if len(cfg.DataBaseHost) == 0 {
         return fmt.Errorf("请指定数据库服务器主机地址\n")
     }
@@ -58,9 +77,10 @@ func RunServer() error {
     if err != nil {
         return fmt.Errorf("数据库连接失败：%v", err)
     }
+
     defer db.Close()
 
-    // 创建HTTP服务器
-    server := rest.NewServer(db)
-    return rest.RunServer(ctx, server, cfg.HTTPPort)
+    services := services.NewService(db)
+
+    return nil
 }

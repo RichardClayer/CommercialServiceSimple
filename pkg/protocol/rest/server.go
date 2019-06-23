@@ -32,7 +32,7 @@ func NewServer(db *sql.DB) *ServiceServer {
 }
 
 // 运行server
-func RunServer(ctx context.Context, s *ServiceServer, httpPort string) error {
+func RunServer(ctx context.Context, httpPort string) error {
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
