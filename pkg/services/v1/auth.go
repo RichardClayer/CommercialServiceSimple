@@ -6,13 +6,9 @@ import (
     "github.com/BiLuoHui/CommercialServiceSimple/tool/response"
     "log"
     "net/http"
-    "time"
 )
 
-var ctx context.Context
-
 func IsRegistered(w http.ResponseWriter, _ *http.Request) {
-    // 从数据库中获取
     c, err := database.Connect()
     if err != nil {
         log.Printf("数据库连接失败：%v\n", err)
@@ -26,23 +22,17 @@ func IsRegistered(w http.ResponseWriter, _ *http.Request) {
     }
     defer c.Close()
 
-    s := "select count(*) from merchant"
-    ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
-    defer cancel()
+    row := c.QueryRowContext(context.Background(), "select count(*) from merchant")
+    var count int
+    row.Scan(&count)
 
-    res, err := c.ExecContext(ctx, s)
-    if err != nil {
-        log.Printf("数据库查询失败：%v\n", err)
-        rd := response.RespData{
-            Code:    response.DBQueryFailed,
-            Message: "查找商户数据失败",
-        }
-
-        response.Send(w, rd)
-        return
-    }
-
-    log.Printf("查询结果：%v\n", res)
+    response.Send(w, response.RespData{
+        Code:    response.Success,
+        Message: "请求成功",
+        Data: map[string]int{
+            "is_registered": count,
+        },
+    })
 }
 
 // Register 商户注册 仅在商户表为空时方可注册成功

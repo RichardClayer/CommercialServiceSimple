@@ -29,7 +29,7 @@ func Connect() (*sql.Conn, error) {
     // user:password@tcp(host)/schema?parseTime=true
     dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?%s",
         c["user"],
-        c["passwor"],
+        c["password"],
         c["host"],
         c["schema"],
         "parseTime=true")
