@@ -40,7 +40,7 @@ func RequestVersionCheck(next http.Handler) http.Handler {
         rs := regex.FindStringSubmatch(a)
         if len(rs) < 2 {
             rd := response.RespData{
-                Code:    response.VersionNotMatch,
+                Code:    response.VersionNone,
                 Message: "未知的版本号",
             }
 
