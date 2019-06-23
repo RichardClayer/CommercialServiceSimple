@@ -29,7 +29,8 @@ func Send(w http.ResponseWriter, data RespData) {
 }
 
 // SendSuccess 发送成功的响应
-func SendSuccess(w http.ResponseWriter, d interface{}) {
+func SendSuccess(w http.ResponseWriter, r *http.Request, d interface{}) {
+    r.Close = true
     w.Header().Set("Content-Type", "application/json; charset=utf-8")
     rd := RespData{
         Code:    Success,
@@ -39,11 +40,11 @@ func SendSuccess(w http.ResponseWriter, d interface{}) {
     if _, err := w.Write(rd.json()); err != nil {
         log.Printf("%v\n", err)
     }
-    return
 }
 
 // SendError 发送失败的响应
-func SendError(w http.ResponseWriter, code int, msg string) {
+func SendError(w http.ResponseWriter, r *http.Request, code int, msg string) {
+    r.Close = true
     w.Header().Set("Content-Type", "application/json; charset=utf-8")
     rd := RespData{
         Code:    code,
@@ -52,5 +53,4 @@ func SendError(w http.ResponseWriter, code int, msg string) {
     if _, err := w.Write(rd.json()); err != nil {
         log.Printf("%v\n", err)
     }
-    return
 }
