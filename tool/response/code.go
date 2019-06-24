@@ -13,7 +13,10 @@ const (
 
 // 认证类错误
 const (
-    NeedLogin = iota + 2000 // 需登录
+    NeedLogin          = iota + 2000 // 需登录
+    LoginAccountFailed               // 登录失败：账号或密码不正确
+    LoginFailed                      // 登录失败：token生成失败获取其他
+    AccountForbidden // 账号被禁用
 )
 
 // 系统类错误
@@ -32,4 +35,5 @@ const (
 const (
     EmployeePwdErr     = iota + 5000 // 员工登录密码加密失败
     EmployeeSaveFailed               // 员工账号数据保存失败
+    EmployeeNotFound                 // 未找到登录账号信息
 )

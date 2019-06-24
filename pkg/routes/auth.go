@@ -1,10 +1,11 @@
 package routes
 
 import (
-    "github.com/BiLuoHui/CommercialServiceSimple/pkg/services/v1"
-    "github.com/BiLuoHui/CommercialServiceSimple/pkg/services/v2"
     "net/http"
     "regexp"
+
+    "github.com/BiLuoHui/CommercialServiceSimple/pkg/services/v1"
+    "github.com/BiLuoHui/CommercialServiceSimple/pkg/services/v2"
 )
 
 var AuthRoutes = Routes{
@@ -31,6 +32,18 @@ var AuthRoutes = Routes{
             switch v {
             case "v1":
                 v1.Register(w, r)
+            }
+        },
+    },
+    Route{
+        Name:    "login",
+        Method:  "POST",
+        Pattern: "/login",
+        HandlerFunc: func(w http.ResponseWriter, r *http.Request) {
+            v := getVersion(r.Header.Get("Accept"))
+            switch v {
+            case "v1":
+                v1.Login(w, r)
             }
         },
     },

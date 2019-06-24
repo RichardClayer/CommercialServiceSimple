@@ -3,6 +3,7 @@ package v1
 import (
     "context"
     "fmt"
+    "log"
     "time"
 
     "github.com/BiLuoHui/CommercialServiceSimple/tool/database"
@@ -39,6 +40,9 @@ func (m *Merchant) Create() error {
     return nil
 }
 
+const (
+    EmployeeHasForbidden = 1 // 账号被禁用
+)
 // 员工
 type Employee struct {
     Id           int    `json:"id"`
@@ -75,6 +79,24 @@ func (e *Employee) Create() error {
     _, err = res.LastInsertId()
     if err != nil {
         return fmt.Errorf("获取保存的商户登录信息失败：%v", err)
+    }
+
+    return nil
+}
+
+// Get 获取员工信息
+func (e *Employee) Get() error {
+    c, err := database.Connect()
+    if err != nil {
+        return fmt.Errorf("数据库连接失败：%v", err)
+    }
+    defer c.Close()
+
+    row := c.QueryRowContext(context.Background(),
+        "select id, name,username,password,is_refundable,is_refundable,position,created_at,updated_at from employees where username = ?", e.UserName)
+    if err = row.Scan(&e.Name, &e.UserName, &e.Password, &e.IsRefundable, &e.IsRefundable, &e.Position, &e.CreatedAt, &e.UpdatedAt); err != nil {
+        log.Printf("查询账号登录信息失败：%v\n", err)
+        return err
     }
 
     return nil

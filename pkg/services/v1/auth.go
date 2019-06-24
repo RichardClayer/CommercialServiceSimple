@@ -7,6 +7,7 @@ import (
     "net/http"
     "time"
 
+    "github.com/BiLuoHui/CommercialServiceSimple/tool/auth"
     "github.com/BiLuoHui/CommercialServiceSimple/tool/database"
     "github.com/BiLuoHui/CommercialServiceSimple/tool/request"
     "github.com/BiLuoHui/CommercialServiceSimple/tool/response"
@@ -91,8 +92,62 @@ func Register(w http.ResponseWriter, r *http.Request) {
     response.SendSuccess(w, r, nil)
 }
 
+// 登录信息
 func Login(w http.ResponseWriter, r *http.Request) {
-    // 获取username、password
+    // 获取 username、password
+    rd, err := request.GetParams(r)
+    if err != nil {
+        log.Printf("无法解析传参：%s\n", err)
+        response.SendError(w, r, response.BadRequest, "无法解析传参")
+        return
+    }
+
+    // 参数验证
+    if err = loginParamsVerify(rd); err != nil {
+        response.SendError(w, r, response.ParamsVerifyFailed, err.Error())
+        return
+    }
+
+    // 账号信息
+    e := Employee{UserName: rd["username"]}
+    if err = e.Get(); err != nil {
+        response.SendError(w, r, response.EmployeeNotFound, "未找打账号信息")
+        return
+    }
+
+    // 账号是否已禁用
+    if e.IsForbidden == EmployeeHasForbidden {
+        response.SendError(w, r, response.AccountForbidden, "账号被禁用")
+        return
+    }
+
+    // 密码验证
+    err = bcrypt.CompareHashAndPassword([]byte(e.Password), []byte(rd["password"]))
+    if err != nil {
+        response.SendError(w, r, response.LoginAccountFailed, "账号或密码不正确")
+        return
+    }
+
+    // token生成
+    token, err := auth.GenToken()
+    if err != nil {
+        response.SendError(w, r, response.LoginFailed, "登录信息生成失败")
+        return
+    }
+
+    // 保存登录信息
+    onlineUser := auth.OnLineUser{
+        Id:           e.Id,
+        Name:         e.Name,
+        UserName:     e.UserName,
+        IsRefundable: e.IsRefundable,
+        IsForbidden:  e.IsForbidden,
+        Position:     e.Position,
+        Token:        token,
+    }
+    auth.Online(token, onlineUser)
+
+    response.SendSuccess(w, r, onlineUser)
 }
 
 // isRegistered 判断是否已注册商户
@@ -135,6 +190,21 @@ func registerParamsVerify(d request.Params) error {
     password, ok := d["password"]
     if !ok || len(password) < 6 {
         return fmt.Errorf("密码长度不能小于6位")
+    }
+
+    return nil
+}
+
+// loginParamsVerify 登录参数验证
+func loginParamsVerify(d request.Params) error {
+    userName, ok := d["username"]
+    if !ok || len(userName) == 0 {
+        return fmt.Errorf("登录账号必传")
+    }
+
+    password, ok := d["password"]
+    if !ok || len(password) == 0 {
+        return fmt.Errorf("密码必传")
     }
 
     return nil
