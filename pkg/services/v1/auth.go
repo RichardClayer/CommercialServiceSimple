@@ -4,13 +4,14 @@ import (
     "context"
     "encoding/json"
     "fmt"
-    "github.com/BiLuoHui/CommercialServiceSimple/tool/database"
-    "github.com/BiLuoHui/CommercialServiceSimple/tool/response"
-    "golang.org/x/crypto/bcrypt"
     "io/ioutil"
     "log"
     "net/http"
     "time"
+
+    "github.com/BiLuoHui/CommercialServiceSimple/tool/database"
+    "github.com/BiLuoHui/CommercialServiceSimple/tool/response"
+    "golang.org/x/crypto/bcrypt"
 )
 
 type registerData map[string]string
@@ -34,9 +35,11 @@ func Register(w http.ResponseWriter, r *http.Request) {
     isRegistered, err := isRegistered()
     if err != nil {
         response.SendError(w, r, response.DBConnectFailed, err.Error())
+        return
     }
     if isRegistered {
         response.SendError(w, r, response.MerchantHasRegistered, "已注册商户请登录")
+        return
     }
     defer r.Body.Close()
 
@@ -45,6 +48,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
     if err != nil {
         log.Println("请求解析错误：" + err.Error())
         response.SendError(w, r, response.BadRequest, "无法解析的请求")
+        return
     }
 
     rd := make(registerData)
@@ -52,11 +56,13 @@ func Register(w http.ResponseWriter, r *http.Request) {
     if err != nil {
         log.Printf("无法解析传参：%s\n", err)
         response.SendError(w, r, response.BadRequest, "无法解析传参")
+        return
     }
 
     // 参数验证
     if err = registerParamsVerify(rd); err != nil {
         response.SendError(w, r, response.ParamsVerifyFailed, err.Error())
+        return
     }
 
     // 保存商户数据
@@ -67,6 +73,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
     }
     if err := m.Create(); err != nil {
         response.SendError(w, r, response.MerchantRegisterFailed, err.Error())
+        return
     }
 
     // 保存登录账号数据
@@ -74,6 +81,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
     if err != nil {
         log.Printf("商户登录账号密码加密失败：%v", err)
         response.SendError(w, r, response.EmployeePwdErr, "登录账号密码加密失败")
+        return
     }
     e := Employee{
         Name:         rd["name"],
@@ -81,12 +89,14 @@ func Register(w http.ResponseWriter, r *http.Request) {
         Password:     string(pwd),
         IsRefundable: 1,
         IsForbidden:  0,
+        Position:     3,
         CreatedAt:    time.Now(),
         UpdatedAt:    time.Now(),
     }
     if err := e.Create(); err != nil {
         log.Printf("商户登录信息保存失败：%v", err)
         response.SendError(w, r, response.EmployeeSaveFailed, "商户登录信息保存失败")
+        return
     }
 
     response.SendSuccess(w, r, nil)

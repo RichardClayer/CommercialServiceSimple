@@ -3,8 +3,9 @@ package v1
 import (
     "context"
     "fmt"
-    "github.com/BiLuoHui/CommercialServiceSimple/tool/database"
     "time"
+
+    "github.com/BiLuoHui/CommercialServiceSimple/tool/database"
 )
 
 // 商户
@@ -46,6 +47,7 @@ type Employee struct {
     Password     string
     IsRefundable int       `json:"is_refundable"`
     IsForbidden  int       `json:"is_forbidden"`
+    Position     int       `json:"position"`
     CreatedAt    time.Time `json:"created_at"`
     UpdatedAt    time.Time `json:"updated_at"`
 }
@@ -58,12 +60,13 @@ func (e *Employee) Create() error {
     }
     defer c.Close()
     res, err := c.ExecContext(context.Background(),
-        "insert into employees(name, username, password, is_refundable, is_forbidden, created_at, updated_at) values(?, ?, ?, ?, ?, ?, ?)",
+        "insert into employees(name, username, password, is_refundable, is_forbidden,position, created_at, updated_at) values(?, ?, ?, ?, ?, ?, ?, ?)",
         e.Name,
         e.UserName,
         e.Password,
         e.IsRefundable,
         e.IsForbidden,
+        e.Position,
         e.CreatedAt,
         e.UpdatedAt)
     if err != nil {
