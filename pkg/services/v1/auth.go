@@ -118,7 +118,10 @@ func isRegistered() (r bool, err error) {
     defer c.Close()
 
     row := c.QueryRowContext(context.Background(), "select count(*) from merchant")
-    row.Scan(&count)
+    err = row.Scan(&count)
+    if err != nil {
+        return false, err
+    }
     if count == 0 {
         isRegistered = false
     } else {
