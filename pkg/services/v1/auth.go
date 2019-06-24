@@ -2,19 +2,16 @@ package v1
 
 import (
     "context"
-    "encoding/json"
     "fmt"
-    "io/ioutil"
     "log"
     "net/http"
     "time"
 
     "github.com/BiLuoHui/CommercialServiceSimple/tool/database"
+    "github.com/BiLuoHui/CommercialServiceSimple/tool/request"
     "github.com/BiLuoHui/CommercialServiceSimple/tool/response"
     "golang.org/x/crypto/bcrypt"
 )
-
-type registerData map[string]string
 
 // IsRegistered 是否已注册商户
 func IsRegistered(w http.ResponseWriter, r *http.Request) {
@@ -44,15 +41,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
     defer r.Body.Close()
 
     // 获取 商户名称、登录账号、密码
-    b, err := ioutil.ReadAll(r.Body)
-    if err != nil {
-        log.Println("请求解析错误：" + err.Error())
-        response.SendError(w, r, response.BadRequest, "无法解析的请求")
-        return
-    }
-
-    rd := make(registerData)
-    err = json.Unmarshal(b, &rd)
+    rd, err := request.GetParams(r)
     if err != nil {
         log.Printf("无法解析传参：%s\n", err)
         response.SendError(w, r, response.BadRequest, "无法解析传参")
@@ -132,7 +121,7 @@ func isRegistered() (r bool, err error) {
 }
 
 // registerParamsVerify 商户注册参数验证
-func registerParamsVerify(d registerData) error {
+func registerParamsVerify(d request.Params) error {
     name, ok := d["name"]
     if !ok || len(name) < 3 {
         return fmt.Errorf("商户名称长度必须大于2位")
