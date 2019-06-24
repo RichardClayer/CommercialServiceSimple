@@ -43,6 +43,7 @@ func (m *Merchant) Create() error {
 const (
     EmployeeHasForbidden = 1 // 账号被禁用
 )
+
 // 员工
 type Employee struct {
     Id           int    `json:"id"`
@@ -94,7 +95,7 @@ func (e *Employee) Get() error {
 
     row := c.QueryRowContext(context.Background(),
         "select id, name,username,password,is_refundable,is_refundable,position,created_at,updated_at from employees where username = ?", e.UserName)
-    if err = row.Scan(&e.Name, &e.UserName, &e.Password, &e.IsRefundable, &e.IsRefundable, &e.Position, &e.CreatedAt, &e.UpdatedAt); err != nil {
+    if err = row.Scan(&e.Id, &e.Name, &e.UserName, &e.Password, &e.IsRefundable, &e.IsRefundable, &e.Position, &e.CreatedAt, &e.UpdatedAt); err != nil {
         log.Printf("查询账号登录信息失败：%v\n", err)
         return err
     }

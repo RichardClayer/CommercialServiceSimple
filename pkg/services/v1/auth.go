@@ -111,7 +111,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
     // 账号信息
     e := Employee{UserName: rd["username"]}
     if err = e.Get(); err != nil {
-        response.SendError(w, r, response.EmployeeNotFound, "未找打账号信息")
+        response.SendError(w, r, response.LoginAccountFailed, "账号或密码不正确")
         return
     }
 
