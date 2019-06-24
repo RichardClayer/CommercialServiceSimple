@@ -15,3 +15,4 @@ cmd/server/server
 .idea
 
 config/*.ini
+cmd/server/config/*.ini
