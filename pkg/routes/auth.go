@@ -59,6 +59,18 @@ var AuthRoutes = Routes{
             }
         },
     },
+    Route{
+        Name:"logout",
+        Method:"DELETE",
+        Pattern:"/logout",
+        HandlerFunc: func(w http.ResponseWriter, r *http.Request) {
+            v := getVersion(r.Header.Get("Accept"))
+            switch v {
+            case "v1":
+                v1.LoginOut(w, r)
+            }
+        },
+    },
 }
 
 // 获取请求版本号

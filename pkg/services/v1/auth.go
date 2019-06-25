@@ -152,10 +152,18 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 // UserInfo 获取登录者信息
 func UserInfo(w http.ResponseWriter, r *http.Request) {
-    t, _ := auth.GetToken(r)
+    t := auth.GetToken(r)
     u, _ := auth.UserInfo(t)
 
     response.SendSuccess(w, r, u)
+}
+
+// LoginOut 退出
+func LoginOut(w http.ResponseWriter, r *http.Request) {
+    t := auth.GetToken(r)
+    auth.Offline(t)
+
+    response.SendSuccess(w, r, nil)
 }
 
 // isRegistered 判断是否已注册商户
