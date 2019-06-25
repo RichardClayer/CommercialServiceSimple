@@ -92,7 +92,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
     response.SendSuccess(w, r, nil)
 }
 
-// 登录信息
+// Login 登录
 func Login(w http.ResponseWriter, r *http.Request) {
     // 获取 username、password
     rd, err := request.GetParams(r)
@@ -148,6 +148,14 @@ func Login(w http.ResponseWriter, r *http.Request) {
     auth.Online(token, onlineUser)
 
     response.SendSuccess(w, r, onlineUser)
+}
+
+// UserInfo 获取登录者信息
+func UserInfo(w http.ResponseWriter, r *http.Request) {
+    t, _ := auth.GetToken(r)
+    u, _ := auth.UserInfo(t)
+
+    response.SendSuccess(w, r, u)
 }
 
 // isRegistered 判断是否已注册商户

@@ -47,6 +47,18 @@ var AuthRoutes = Routes{
             }
         },
     },
+    Route{
+        Name:    "userInfo",
+        Method:  "GET",
+        Pattern: "/user-info",
+        HandlerFunc: func(w http.ResponseWriter, r *http.Request) {
+            v := getVersion(r.Header.Get("Accept"))
+            switch v {
+            case "v1":
+                v1.UserInfo(w, r)
+            }
+        },
+    },
 }
 
 // 获取请求版本号
