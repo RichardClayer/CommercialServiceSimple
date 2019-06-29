@@ -16,7 +16,9 @@ const (
     NeedLogin          = iota + 2000 // 需登录
     LoginAccountFailed               // 登录失败：账号或密码不正确
     LoginFailed                      // 登录失败：token生成失败
-    AccountForbidden // 账号被禁用
+    LoginSaveFailed                  // 登录失败：保存用户信息到在线用户失败
+    AccountForbidden                 // 账号被禁用
+    LogOutFailed                     // 退出失败
 )
 
 // 系统类错误

@@ -145,7 +145,12 @@ func Login(w http.ResponseWriter, r *http.Request) {
         Position:     e.Position,
         Token:        token,
     }
-    auth.Online(token, onlineUser)
+    err = auth.Online(token, onlineUser)
+    if err != nil {
+        log.Printf("用户登录失败，保存登录信息时出错：%v\n", err)
+        response.SendError(w, r, response.LoginSaveFailed, "保存登录信息失败")
+        return
+    }
 
     response.SendSuccess(w, r, onlineUser)
 }
@@ -161,7 +166,10 @@ func UserInfo(w http.ResponseWriter, r *http.Request) {
 // LoginOut 退出
 func LoginOut(w http.ResponseWriter, r *http.Request) {
     t := auth.GetToken(r)
-    auth.Offline(t)
+    if err := auth.Offline(t); err != nil {
+        log.Printf("退出操作失败：%v\n", err)
+        response.SendError(w, r, response.LogOutFailed, "退出失败")
+    }
 
     response.SendSuccess(w, r, nil)
 }
