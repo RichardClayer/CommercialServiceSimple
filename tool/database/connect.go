@@ -44,6 +44,7 @@ func Connect() (*sql.Conn, error) {
     ctx := context.Background()
     conn, err := db.Conn(ctx)
     if err != nil {
+        log.Println("数据库连接失败：" + err.Error())
         return nil, fmt.Errorf("连接数据库错误")
     }
 
