@@ -5,6 +5,7 @@ import (
     "database/sql"
     "fmt"
     "github.com/Unknwon/goconfig"
+    "log"
 
     _ "github.com/go-sql-driver/mysql"
 )
@@ -35,14 +36,15 @@ func Connect() (*sql.Conn, error) {
         "parseTime=true")
     db, err := sql.Open("mysql", dsn)
     if err != nil {
-        return nil, fmt.Errorf("连接数据库失败：%v", err)
+        log.Println("数据库连接失败：" + err.Error())
+        return nil, fmt.Errorf("数据库连接错误")
     }
     defer db.Close()
 
     ctx := context.Background()
     conn, err := db.Conn(ctx)
     if err != nil {
-        return nil, fmt.Errorf("连接数据库失败：%v", err)
+        return nil, fmt.Errorf("连接数据库错误")
     }
 
     return conn, nil
